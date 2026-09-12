@@ -57,10 +57,16 @@ export interface Profile {
   createdAt: string;
 }
 
-/** The authoritative source for role/name — fetched right after login, as on the web. */
+/**
+ * The authoritative source for role/name — fetched right after login, as on
+ * the web. Accepts the profile either inside the standard envelope or bare:
+ * this call gates every session, so an unexpected wrapper shouldn't read as a
+ * failed login (the portal unwraps its theme endpoints the same way).
+ */
 export const getProfile = async (): Promise<Profile> => {
-  const response = await api.get<ApiEnvelope<Profile>>(API_ENDPOINTS.PROFILE.GET);
-  const profile = response.data.result;
+  const response = await api.get<ApiEnvelope<Profile> | Profile>(API_ENDPOINTS.PROFILE.GET);
+  const profile = (response.data as ApiEnvelope<Profile>)?.result ?? (response.data as Profile);
+  if (!profile?.role) throw new Error('The server returned an unexpected profile response.');
   return { ...profile, role: normalizeRole(profile.role) };
 };
 

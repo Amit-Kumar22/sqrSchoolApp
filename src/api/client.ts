@@ -42,21 +42,40 @@ api.interceptors.response.use(
   },
 );
 
-/** Pulls the backend's {message} out of an axios error, falling back when the shape is unexpected. */
+/**
+ * Turns any thrown value into something worth showing a user.
+ *
+ * The fallback is deliberately the last resort: a caller's generic line (say
+ * "Invalid email or password") must never end up masking a network outage or a
+ * bug thrown after the request already succeeded — that turns a diagnosable
+ * failure into a wrong accusation.
+ */
 export function apiErrorMessage(err: unknown, fallback: string): string {
   const axiosError = err as {
-    response?: { data?: { message?: string } };
+    response?: { status?: number; data?: { message?: string } };
     code?: string;
     message?: string;
+    isAxiosError?: boolean;
   };
+
+  // The backend's own message wins — it's the most specific thing available.
   if (axiosError?.response?.data?.message) return axiosError.response.data.message;
-  // No response at all — almost always the phone can't reach the server.
-  if (!axiosError?.response) {
-    if (axiosError?.code === 'ECONNABORTED') return 'The server took too long to respond. Please try again.';
-    if (axiosError?.message === 'Network Error') {
-      return 'Cannot reach the server. Check your internet connection and try again.';
-    }
+
+  if (axiosError?.response) {
+    // Responded, but with no message field — name the status so the failure is identifiable.
+    return `${fallback} (HTTP ${axiosError.response.status})`;
   }
+
+  if (axiosError?.isAxiosError) {
+    // Request left, nothing came back: almost always connectivity.
+    if (axiosError.code === 'ECONNABORTED') return 'The server took too long to respond. Please try again.';
+    return 'Cannot reach the server. Check your internet connection and try again.';
+  }
+
+  // Not an HTTP failure at all — a local one (storage, an unexpected payload
+  // shape). Its own message is far more useful than the caller's guess.
+  if (err instanceof Error && err.message) return err.message;
+
   return fallback;
 }
 

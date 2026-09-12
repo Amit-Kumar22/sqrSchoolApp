@@ -84,6 +84,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setAuthToken(accessToken);
     try {
       const profile = await getProfile();
+      if (!profile?.role) {
+        throw new Error('Signed in, but your profile could not be read. Please contact your school administrator.');
+      }
       if (!APP_ROLES.includes(profile.role)) {
         setAuthToken(null);
         throw new UnsupportedRoleError(profile.role);
@@ -96,7 +99,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         role: profile.role,
         status: profile.status,
       };
-      await saveSession(accessToken, sessionUser);
+
+      // Persisting is a convenience (it keeps the user signed in across
+      // restarts), not part of authenticating — a Keystore failure must not
+      // turn a successful login into "wrong password".
+      await saveSession(accessToken, sessionUser).catch(() => {});
+
       setUser(sessionUser);
       return sessionUser;
     } catch (err) {
