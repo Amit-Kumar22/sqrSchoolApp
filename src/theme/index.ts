@@ -1,29 +1,40 @@
 // ─── Design tokens ────────────────────────────────────────────────────────────
-// The palette mirrors the web portal's premium amber/slate chrome so the app and
-// the website read as one product. Sizes are deliberately compact — this is a
-// dense data app, not a marketing page.
+// Deep navy→forest chrome for headers, a vivid green for every action, and clean
+// white surfaces for content. Sizes are deliberately compact — this is a dense
+// data app, not a marketing page.
 
 export const colors = {
-  /** Primary action color — matches the portal's amber-700 buttons. */
-  brand: '#B45309',
-  brandDark: '#92400E',
-  /** Espresso used for headers and the login hero, same as the web sidebar. */
-  brandDeep: '#4A270A',
-  brandDeeper: '#2B1706',
-  brandSoft: '#FEF3C7',
-  brandTint: '#FFFBEB',
+  /** Primary action color — buttons, active tabs, selected states. */
+  brand: '#16A34A',
+  brandDark: '#15803D',
+  /** Lighter green for gradient highlights and accents on dark chrome. */
+  brandBright: '#22C55E',
+  brandSoft: '#DCFCE7',
+  brandTint: '#F0FDF4',
 
-  bg: '#F5F6F8',
+  /** Navy used by header bands and the logo tile. */
+  chrome: '#0B2536',
+  chromeDeep: '#061825',
+  /** Forest green the chrome gradient fades into. */
+  chromeGreen: '#0B3A30',
+  onChrome: '#FFFFFF',
+  onChromeMuted: 'rgba(255, 255, 255, 0.72)',
+  onChromeFaint: 'rgba(255, 255, 255, 0.55)',
+  /** Frosted fill for chips and icon buttons sitting on chrome. */
+  chromeGlass: 'rgba(255, 255, 255, 0.12)',
+  chromeGlassBorder: 'rgba(255, 255, 255, 0.16)',
+
+  bg: '#F3F6F5',
   surface: '#FFFFFF',
-  surfaceAlt: '#F8FAFC',
-  overlay: 'rgba(15, 23, 42, 0.45)',
+  surfaceAlt: '#F7FAF9',
+  overlay: 'rgba(6, 24, 37, 0.5)',
 
-  border: '#E7EAEF',
-  borderStrong: '#D6DBE3',
+  border: '#E3E9E7',
+  borderStrong: '#D0DAD7',
 
-  text: '#0F172A',
-  textMuted: '#5B6675',
-  textFaint: '#8A93A2',
+  text: '#0B1E2B',
+  textMuted: '#526270',
+  textFaint: '#8694A0',
   onBrand: '#FFFFFF',
 
   success: '#059669',
@@ -32,9 +43,20 @@ export const colors = {
   warningTint: '#FFFBEB',
   danger: '#DC2626',
   dangerTint: '#FEF2F2',
-  info: '#0284C7',
-  infoTint: '#F0F9FF',
-  neutralTint: '#F1F5F9',
+  dangerBorder: '#FBD5D5',
+  info: '#2563EB',
+  infoTint: '#EFF6FF',
+  violet: '#7C3AED',
+  violetTint: '#F5F3FF',
+  neutralTint: '#EEF3F1',
+} as const;
+
+/** Gradient stops — typed as tuples because expo-linear-gradient requires ≥ 2. */
+export const gradients = {
+  /** Header bands and the logo tile: navy top-left fading to forest green. */
+  chrome: [colors.chromeDeep, colors.chrome, colors.chromeGreen],
+  /** Primary buttons: bright green easing into the deeper brand green. */
+  brand: [colors.brandBright, colors.brand, colors.brandDark],
 } as const;
 
 export const spacing = {
@@ -48,9 +70,9 @@ export const spacing = {
 
 export const radius = {
   sm: 8,
-  md: 10,
-  lg: 14,
-  xl: 18,
+  md: 12,
+  lg: 16,
+  xl: 22,
   pill: 999,
 } as const;
 
@@ -69,22 +91,30 @@ export const SCREEN_PADDING = 14;
 
 export const shadow = {
   card: {
-    shadowColor: '#0B1220',
+    shadowColor: '#0B1E2B',
     shadowOpacity: 0.05,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 2 },
     elevation: 2,
   },
   raised: {
-    shadowColor: '#0B1220',
+    shadowColor: '#0B1E2B',
     shadowOpacity: 0.1,
     shadowRadius: 16,
     shadowOffset: { width: 0, height: 6 },
     elevation: 6,
   },
+  /** Soft green glow under primary buttons. */
+  brand: {
+    shadowColor: colors.brand,
+    shadowOpacity: 0.28,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 3,
+  },
   /** Bottom nav — shadow is cast upward. */
   nav: {
-    shadowColor: '#0B1220',
+    shadowColor: '#0B1E2B',
     shadowOpacity: 0.08,
     shadowRadius: 12,
     shadowOffset: { width: 0, height: -3 },
@@ -98,6 +128,7 @@ export const tone = {
   warning: { fg: colors.warning, bg: colors.warningTint },
   danger: { fg: colors.danger, bg: colors.dangerTint },
   info: { fg: colors.info, bg: colors.infoTint },
+  violet: { fg: colors.violet, bg: colors.violetTint },
   brand: { fg: colors.brand, bg: colors.brandTint },
   neutral: { fg: colors.textMuted, bg: colors.neutralTint },
 } as const;

@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     width: 26,
     height: 26,
     borderRadius: radius.sm,
-    backgroundColor: colors.brandTint,
+    backgroundColor: colors.brandSoft,
     alignItems: 'center',
     justifyContent: 'center',
   },

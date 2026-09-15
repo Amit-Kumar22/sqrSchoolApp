@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: radius.pill,
-    backgroundColor: colors.brandTint,
+    backgroundColor: colors.brandSoft,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 2,

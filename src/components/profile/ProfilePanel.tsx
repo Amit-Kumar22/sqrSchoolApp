@@ -113,9 +113,12 @@ export default function ProfilePanel({ links }: { links: ProfileLink[] }) {
   const roleLabel = ROLE_LABELS[profile?.role ?? user?.role ?? ''] ?? 'Member';
 
   return (
-    <Screen refreshing={refreshing} onRefresh={onRefresh} keyboardAvoiding contentStyle={styles.content}>
-      <PageTitle title="Profile" subtitle="Your account and app settings" />
-
+    <Screen
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      keyboardAvoiding
+      contentStyle={styles.content}
+      header={<PageTitle title="Profile" subtitle="Your account and app settings" />}>
       {loading ? (
         <SkeletonList rows={3} height={110} />
       ) : (

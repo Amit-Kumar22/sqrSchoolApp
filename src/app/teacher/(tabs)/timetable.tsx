@@ -75,9 +75,11 @@ export default function TeacherTimetableScreen() {
   );
 
   return (
-    <Screen refreshing={refreshing} onRefresh={onRefresh} contentStyle={styles.content}>
-      <PageTitle title="Timetable" subtitle={`${entries.length} periods this week`} />
-
+    <Screen
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      contentStyle={styles.content}
+      header={<PageTitle title="Timetable" subtitle={`${entries.length} periods this week`} />}>
       {/* Day strip — horizontal so all six days fit without wrapping. */}
       <ScrollView
         horizontal

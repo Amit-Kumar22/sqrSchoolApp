@@ -57,9 +57,8 @@ export default function HolidaysScreen() {
       edges={['top', 'left', 'right', 'bottom']}
       refreshing={refreshing}
       onRefresh={onRefresh}
-      contentStyle={styles.content}>
-      <ScreenHeader title="Holidays" subtitle={`${items.length} in the calendar`} />
-
+      contentStyle={styles.content}
+      header={<ScreenHeader title="Holidays" subtitle={`${items.length} in the calendar`} />}>
       <SegmentedControl<Filter>
         items={[
           { key: 'upcoming', label: `Upcoming (${upcoming.length})` },

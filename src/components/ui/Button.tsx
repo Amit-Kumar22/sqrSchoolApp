@@ -1,7 +1,8 @@
 import { ActivityIndicator, Pressable, StyleSheet, Text, View, type ViewStyle } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
-import { colors, font, radius, spacing } from '@/theme';
+import { colors, font, gradients, radius, shadow, spacing } from '@/theme';
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'success';
 type Size = 'sm' | 'md';
@@ -23,7 +24,7 @@ const VARIANTS: Record<Variant, { bg: string; fg: string; border: string }> = {
   primary: { bg: colors.brand, fg: colors.onBrand, border: colors.brand },
   secondary: { bg: colors.surface, fg: colors.text, border: colors.borderStrong },
   ghost: { bg: 'transparent', fg: colors.brand, border: 'transparent' },
-  danger: { bg: colors.dangerTint, fg: colors.danger, border: '#FBD5D5' },
+  danger: { bg: colors.dangerTint, fg: colors.danger, border: colors.dangerBorder },
   success: { bg: colors.success, fg: colors.onBrand, border: colors.success },
 };
 
@@ -40,7 +41,8 @@ export default function Button({
 }: ButtonProps) {
   const palette = VARIANTS[variant];
   const isInactive = disabled || loading;
-  const height = size === 'sm' ? 34 : 44;
+  const isPrimary = variant === 'primary';
+  const height = size === 'sm' ? 34 : 46;
   const iconSize = size === 'sm' ? 14 : 16;
 
   return (
@@ -55,12 +57,21 @@ export default function Button({
           height,
           backgroundColor: palette.bg,
           borderColor: palette.border,
-          paddingHorizontal: size === 'sm' ? spacing.md : spacing.lg,
+          paddingHorizontal: size === 'sm' ? spacing.md + 2 : spacing.xl,
           opacity: isInactive ? 0.55 : pressed ? 0.85 : 1,
         },
+        isPrimary && !isInactive && shadow.brand,
         block && styles.block,
         style,
       ]}>
+      {isPrimary ? (
+        <LinearGradient
+          colors={gradients.brand}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={[StyleSheet.absoluteFill, styles.gradient]}
+        />
+      ) : null}
       {loading ? (
         <ActivityIndicator size="small" color={palette.fg} />
       ) : (
@@ -121,12 +132,15 @@ export function IconButton({
 
 const styles = StyleSheet.create({
   base: {
-    borderRadius: radius.md,
+    borderRadius: radius.pill,
     borderWidth: StyleSheet.hairlineWidth,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
   },
+  // Rounded on the fill itself rather than clipping the Pressable, which would
+  // also clip the button's glow shadow on iOS.
+  gradient: { borderRadius: radius.pill },
   block: { alignSelf: 'stretch' },
   content: {
     flexDirection: 'row',

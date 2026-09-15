@@ -21,8 +21,8 @@ export default function TeacherMessagesScreen() {
       edges={['top', 'left', 'right', 'bottom']}
       refreshing={refreshing}
       onRefresh={onRefresh}
-      contentStyle={{ gap: spacing.md }}>
-      <ScreenHeader title="Messages" subtitle="Chat with staff and students" />
+      contentStyle={{ gap: spacing.md }}
+      header={<ScreenHeader title="Messages" subtitle="Chat with staff and students" />}>
       <ConversationList
         onReady={(fn) => {
           reload.current = fn;

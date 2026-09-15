@@ -139,20 +139,25 @@ export default function TeacherHomeworkScreen() {
   const hasFilters = classFilter !== null || subjectFilter !== null;
 
   return (
-    <Screen refreshing={refreshing} onRefresh={onRefresh} contentStyle={styles.content}>
-      <PageTitle
-        title="Homework"
-        subtitle={total ? `${total} assigned` : 'Set work for your classes'}
-        right={
-          <Button
-            label="Add"
-            icon="add"
-            size="sm"
-            disabled={slots.length === 0}
-            onPress={() => setCreateOpen(true)}
-          />
-        }
-      />
+    <Screen
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      contentStyle={styles.content}
+      header={
+        <PageTitle
+          title="Homework"
+          subtitle={total ? `${total} assigned` : 'Set work for your classes'}
+          right={
+            <Button
+              label="Add"
+              icon="add"
+              size="sm"
+              disabled={slots.length === 0}
+              onPress={() => setCreateOpen(true)}
+            />
+          }
+        />
+      }>
 
       {error ? <Banner message={error} /> : null}
 

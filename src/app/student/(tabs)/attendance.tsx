@@ -52,9 +52,11 @@ export default function StudentAttendanceScreen() {
   }, [load]);
 
   return (
-    <Screen refreshing={refreshing} onRefresh={onRefresh} contentStyle={styles.content}>
-      <PageTitle title="Attendance" subtitle="Your daily record" />
-
+    <Screen
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      contentStyle={styles.content}
+      header={<PageTitle title="Attendance" subtitle="Your daily record" />}>
       {error ? <Banner message={error} /> : null}
 
       {loading ? (
@@ -144,7 +146,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: radius.sm,
-    backgroundColor: colors.brandTint,
+    backgroundColor: colors.brandSoft,
     alignItems: 'center',
     justifyContent: 'center',
   },

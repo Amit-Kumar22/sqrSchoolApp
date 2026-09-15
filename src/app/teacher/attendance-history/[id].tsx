@@ -16,8 +16,10 @@ export default function AttendanceHistoryScreen() {
   const userId = Number(id);
 
   return (
-    <Screen edges={['top', 'left', 'right', 'bottom']} contentStyle={{ gap: spacing.md }}>
-      <ScreenHeader title="Attendance history" subtitle={name || undefined} />
+    <Screen
+      edges={['top', 'left', 'right', 'bottom']}
+      contentStyle={{ gap: spacing.md }}
+      header={<ScreenHeader title="Attendance history" subtitle={name || undefined} />}>
       <Card>
         {Number.isFinite(userId) && userId > 0 ? (
           <AttendanceCalendar userId={userId} />

@@ -26,14 +26,14 @@ export function StatCard({
   const palette = tone[toneName];
   return (
     <View style={[styles.stat, style]}>
-      <View style={[styles.statIcon, { backgroundColor: palette.bg }]}>
-        <Ionicons name={icon} size={15} color={palette.fg} />
+      <View style={[styles.statIcon, { backgroundColor: palette.fg }]}>
+        <Ionicons name={icon} size={16} color={colors.onBrand} />
       </View>
-      <Text style={styles.statValue} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
-        {value}
-      </Text>
       <Text style={styles.statLabel} numberOfLines={1}>
         {label}
+      </Text>
+      <Text style={styles.statValue} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
+        {value}
       </Text>
       {caption ? (
         <Text style={styles.statCaption} numberOfLines={1}>
@@ -78,7 +78,7 @@ export function Avatar({
 export function ListRow({
   icon,
   iconColor = colors.brand,
-  iconBackground = colors.brandTint,
+  iconBackground = colors.brandSoft,
   title,
   subtitle,
   right,
@@ -162,7 +162,10 @@ export function SegmentedControl<T extends string>({
 
 // ─── Stack screen header ──────────────────────────────────────────────────────
 
-/** Compact header for pushed screens — back chevron, title, optional action. */
+/**
+ * Header for pushed screens — back chevron, title, optional action. Drawn for
+ * the dark band, so pass it as `<Screen header>`.
+ */
 export function ScreenHeader({
   title,
   subtitle,
@@ -184,7 +187,7 @@ export function ScreenHeader({
         accessibilityRole="button"
         accessibilityLabel="Go back"
         style={styles.headerBack}>
-        <Ionicons name="chevron-back" size={19} color={colors.text} />
+        <Ionicons name="chevron-back" size={19} color={colors.onChrome} />
       </Pressable>
       <View style={styles.headerTitles}>
         <Text style={styles.headerTitle} numberOfLines={1}>
@@ -201,7 +204,7 @@ export function ScreenHeader({
   );
 }
 
-/** Page title block used at the top of each tab screen. */
+/** Title block for each tab screen — pass it as `<Screen header>`. */
 export function PageTitle({
   title,
   subtitle,
@@ -248,15 +251,15 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   statIcon: {
-    width: 28,
-    height: 28,
-    borderRadius: radius.sm,
+    width: 32,
+    height: 32,
+    borderRadius: radius.sm + 2,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: spacing.sm,
+    marginBottom: spacing.md,
   },
   statValue: {
-    fontSize: font.xxl,
+    fontSize: font.xxl + 1,
     fontWeight: '800',
     color: colors.text,
     letterSpacing: -0.6,
@@ -264,7 +267,7 @@ const styles = StyleSheet.create({
   statLabel: {
     fontSize: font.sm,
     color: colors.textMuted,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   statCaption: {
     fontSize: font.xs,
@@ -299,67 +302,69 @@ const styles = StyleSheet.create({
   },
   segment: {
     flexDirection: 'row',
-    backgroundColor: colors.neutralTint,
-    borderRadius: radius.md,
+    backgroundColor: colors.surface,
+    borderRadius: radius.pill,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
     padding: 3,
     gap: 3,
+    ...shadow.card,
   },
   segmentItem: {
     flex: 1,
-    height: 32,
+    height: 34,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: radius.sm,
+    borderRadius: radius.pill,
   },
   segmentItemActive: {
-    backgroundColor: colors.surface,
-    ...shadow.card,
+    backgroundColor: colors.brand,
+    ...shadow.brand,
   },
   segmentLabel: {
     fontSize: font.sm,
     fontWeight: '600',
     color: colors.textMuted,
   },
-  segmentLabelActive: { color: colors.text },
+  segmentLabelActive: { color: colors.onBrand, fontWeight: '700' },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
-    paddingVertical: spacing.md,
+    paddingTop: spacing.xs,
   },
   headerBack: {
-    width: 32,
-    height: 32,
-    borderRadius: radius.sm,
-    backgroundColor: colors.surface,
+    width: 36,
+    height: 36,
+    borderRadius: radius.pill,
+    backgroundColor: colors.chromeGlass,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: colors.border,
+    borderColor: colors.chromeGlassBorder,
     alignItems: 'center',
     justifyContent: 'center',
   },
   headerTitles: { flex: 1 },
   headerTitle: {
-    fontSize: font.xl,
+    fontSize: font.xl + 1,
     fontWeight: '700',
-    color: colors.text,
+    color: colors.onChrome,
     letterSpacing: -0.3,
   },
   headerSubtitle: {
     fontSize: font.sm,
-    color: colors.textFaint,
-    marginTop: 1,
+    color: colors.onChromeMuted,
+    marginTop: 2,
   },
   pageTitle: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
-    paddingTop: spacing.md,
-    paddingBottom: spacing.lg,
+    paddingTop: spacing.sm,
   },
   pageTitleText: {
     fontSize: font.display - 2,
     fontWeight: '800',
-    color: colors.text,
+    color: colors.onChrome,
     letterSpacing: -0.6,
   },
 });

@@ -14,7 +14,7 @@ import { SectionCard } from '@/components/ui/Card';
 import { Badge, Banner, EmptyState, SkeletonList } from '@/components/ui/Feedback';
 import { StatCard, StatGrid } from '@/components/ui/Layout';
 import Screen from '@/components/ui/Screen';
-import { colors, font, radius, spacing } from '@/theme';
+import { colors, font, radius, shadow, spacing } from '@/theme';
 import { formatDate } from '@/utils/format';
 
 const QUICK_ACTIONS = [
@@ -56,23 +56,27 @@ export default function TeacherDashboardScreen() {
   const exams = dashboard?.examSummary;
 
   return (
-    <Screen refreshing={refreshing} onRefresh={onRefresh} contentStyle={styles.content}>
-      <HeroHeader
-        name={profile?.fullName ?? user?.fullName}
-        roleLabel="Teacher"
-        meta={profile?.employeeCode}
-        action={
-          <Pressable
-            onPress={() => router.push('/teacher/messages')}
-            hitSlop={8}
-            accessibilityRole="button"
-            accessibilityLabel="Open messages"
-            style={styles.heroAction}>
-            <Ionicons name="chatbubble-ellipses-outline" size={18} color={colors.onBrand} />
-          </Pressable>
-        }
-      />
-
+    <Screen
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      contentStyle={styles.content}
+      header={
+        <HeroHeader
+          name={profile?.fullName ?? user?.fullName}
+          roleLabel="Teacher"
+          meta={profile?.employeeCode}
+          action={
+            <Pressable
+              onPress={() => router.push('/teacher/messages')}
+              hitSlop={8}
+              accessibilityRole="button"
+              accessibilityLabel="Open messages"
+              style={styles.heroAction}>
+              <Ionicons name="chatbubble-ellipses-outline" size={18} color={colors.onChrome} />
+            </Pressable>
+          }
+        />
+      }>
       {error ? <Banner message={error} /> : null}
 
       <View style={styles.quickRow}>
@@ -100,7 +104,7 @@ export default function TeacherDashboardScreen() {
               icon="library-outline"
               label="My classes"
               value={`${students?.totalClasses ?? 0}`}
-              toneName="brand"
+              toneName="violet"
             />
             <StatCard
               icon="people-outline"
@@ -235,12 +239,14 @@ function ProfileCell({ label, value }: { label: string; value?: string | null })
 }
 
 const styles = StyleSheet.create({
-  content: { paddingTop: spacing.md, gap: spacing.lg },
+  content: { gap: spacing.lg },
   heroAction: {
-    width: 34,
-    height: 34,
+    width: 38,
+    height: 38,
     borderRadius: radius.pill,
-    backgroundColor: 'rgba(255,255,255,0.16)',
+    backgroundColor: colors.chromeGlass,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.chromeGlassBorder,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -251,18 +257,19 @@ const styles = StyleSheet.create({
   quickItem: {
     flex: 1,
     alignItems: 'center',
-    gap: 5,
-    paddingVertical: spacing.md,
+    gap: 6,
+    paddingVertical: spacing.md + 2,
     backgroundColor: colors.surface,
-    borderRadius: radius.md,
+    borderRadius: radius.lg,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.border,
+    ...shadow.card,
   },
   quickIcon: {
-    width: 32,
-    height: 32,
+    width: 36,
+    height: 36,
     borderRadius: radius.pill,
-    backgroundColor: colors.brandTint,
+    backgroundColor: colors.brandSoft,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -295,7 +302,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: radius.sm,
-    backgroundColor: colors.brandTint,
+    backgroundColor: colors.brandSoft,
     alignItems: 'center',
     justifyContent: 'center',
   },

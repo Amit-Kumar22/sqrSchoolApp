@@ -22,6 +22,7 @@ import {
 } from '@/api/services/communication';
 import { useAuth } from '@/auth/AuthContext';
 import { Banner, EmptyState } from '@/components/ui/Feedback';
+import HeaderBand, { sheetStyle } from '@/components/ui/HeaderBand';
 import { Avatar } from '@/components/ui/Layout';
 import { loadLastRead, saveLastRead } from '@/components/messaging/lastRead';
 import { colors, font, radius, spacing, SCREEN_PADDING } from '@/theme';
@@ -134,121 +135,126 @@ export default function ChatThread() {
   const data = [...messages].reverse();
 
   return (
-    <SafeAreaView style={styles.root} edges={['top', 'left', 'right', 'bottom']}>
-      <View style={styles.header}>
-        <Pressable
-          onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))}
-          hitSlop={10}
-          accessibilityRole="button"
-          accessibilityLabel="Go back"
-          style={styles.back}>
-          <Ionicons name="chevron-back" size={20} color={colors.text} />
-        </Pressable>
-        <Avatar name={name} size={36} />
-        <View style={styles.headerText}>
-          <Text style={styles.headerName} numberOfLines={1}>
-            {name || 'Conversation'}
-          </Text>
-          <Text style={styles.headerMeta} numberOfLines={1}>
-            {sending ? 'Sending…' : 'Messages refresh automatically'}
-          </Text>
+    // The header band paints under the status bar itself, so 'top' is left off.
+    <SafeAreaView style={styles.root} edges={['left', 'right', 'bottom']}>
+      <HeaderBand>
+        <View style={styles.header}>
+          <Pressable
+            onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))}
+            hitSlop={10}
+            accessibilityRole="button"
+            accessibilityLabel="Go back"
+            style={styles.back}>
+            <Ionicons name="chevron-back" size={19} color={colors.onChrome} />
+          </Pressable>
+          <Avatar name={name} size={38} />
+          <View style={styles.headerText}>
+            <Text style={styles.headerName} numberOfLines={1}>
+              {name || 'Conversation'}
+            </Text>
+            <Text style={styles.headerMeta} numberOfLines={1}>
+              {sending ? 'Sending…' : 'Messages refresh automatically'}
+            </Text>
+          </View>
         </View>
-      </View>
+      </HeaderBand>
 
-      {error ? <Banner message={error} style={styles.banner} /> : null}
+      <View style={sheetStyle}>
+        {error ? <Banner message={error} style={styles.banner} /> : null}
 
-      {/* 'padding' on both platforms — under edge-to-edge Android the window
-          doesn't resize, which would leave the composer behind the keyboard. */}
-      <KeyboardAvoidingView style={styles.flex} behavior="padding">
-        {loading ? (
-          <View style={styles.loading}>
-            <ActivityIndicator color={colors.brand} />
-          </View>
-        ) : messages.length === 0 ? (
-          <View style={styles.flex}>
-            <EmptyState
-              icon="chatbubble-ellipses-outline"
-              title="No messages yet"
-              description="Say hello to start the conversation."
-            />
-          </View>
-        ) : (
-          <FlatList
-            ref={listRef}
-            data={data}
-            inverted
-            keyExtractor={(item) => `${item.id}-${item.clientMessageId ?? ''}`}
-            contentContainerStyle={styles.listContent}
-            keyboardShouldPersistTaps="handled"
-            keyboardDismissMode="interactive"
-            showsVerticalScrollIndicator={false}
-            renderItem={({ item, index }) => {
-              const mine = item.senderId === user?.id;
-              // `data` is newest-first, so the "next" item is the older one.
-              const older = data[index + 1];
-              const showDate =
-                !older || formatDate(older.createdAt) !== formatDate(item.createdAt);
-              return (
-                <View>
-                  {/* The divider precedes the bubble so it sits above the day's
-                      first message once the inverted list flips cell order. */}
-                  {showDate ? (
-                    <View style={styles.dateDivider}>
-                      <Text style={styles.dateDividerText}>{formatDate(item.createdAt)}</Text>
-                    </View>
-                  ) : null}
-                  <View style={[styles.bubbleRow, mine ? styles.bubbleRowMine : styles.bubbleRowTheirs]}>
-                    <View style={[styles.bubble, mine ? styles.bubbleMine : styles.bubbleTheirs]}>
-                      {!mine && item.senderName ? (
-                        <Text style={styles.sender} numberOfLines={1}>
-                          {item.senderName}
-                        </Text>
-                      ) : null}
-                      <Text style={[styles.message, mine && styles.messageMine]}>{item.content}</Text>
-                      <View style={styles.metaRow}>
-                        <Text style={[styles.time, mine && styles.timeMine]}>
-                          {formatChatTimestamp(item.createdAt)}
-                        </Text>
-                        {mine ? (
-                          <Ionicons
-                            name={item.status === 'SENDING' ? 'time-outline' : 'checkmark-done'}
-                            size={12}
-                            color="rgba(255,255,255,0.8)"
-                          />
+        {/* 'padding' on both platforms — under edge-to-edge Android the window
+            doesn't resize, which would leave the composer behind the keyboard. */}
+        <KeyboardAvoidingView style={styles.flex} behavior="padding">
+          {loading ? (
+            <View style={styles.loading}>
+              <ActivityIndicator color={colors.brand} />
+            </View>
+          ) : messages.length === 0 ? (
+            <View style={styles.flex}>
+              <EmptyState
+                icon="chatbubble-ellipses-outline"
+                title="No messages yet"
+                description="Say hello to start the conversation."
+              />
+            </View>
+          ) : (
+            <FlatList
+              ref={listRef}
+              data={data}
+              inverted
+              keyExtractor={(item) => `${item.id}-${item.clientMessageId ?? ''}`}
+              contentContainerStyle={styles.listContent}
+              keyboardShouldPersistTaps="handled"
+              keyboardDismissMode="interactive"
+              showsVerticalScrollIndicator={false}
+              renderItem={({ item, index }) => {
+                const mine = item.senderId === user?.id;
+                // `data` is newest-first, so the "next" item is the older one.
+                const older = data[index + 1];
+                const showDate =
+                  !older || formatDate(older.createdAt) !== formatDate(item.createdAt);
+                return (
+                  <View>
+                    {/* The divider precedes the bubble so it sits above the day's
+                        first message once the inverted list flips cell order. */}
+                    {showDate ? (
+                      <View style={styles.dateDivider}>
+                        <Text style={styles.dateDividerText}>{formatDate(item.createdAt)}</Text>
+                      </View>
+                    ) : null}
+                    <View style={[styles.bubbleRow, mine ? styles.bubbleRowMine : styles.bubbleRowTheirs]}>
+                      <View style={[styles.bubble, mine ? styles.bubbleMine : styles.bubbleTheirs]}>
+                        {!mine && item.senderName ? (
+                          <Text style={styles.sender} numberOfLines={1}>
+                            {item.senderName}
+                          </Text>
                         ) : null}
+                        <Text style={[styles.message, mine && styles.messageMine]}>{item.content}</Text>
+                        <View style={styles.metaRow}>
+                          <Text style={[styles.time, mine && styles.timeMine]}>
+                            {formatChatTimestamp(item.createdAt)}
+                          </Text>
+                          {mine ? (
+                            <Ionicons
+                              name={item.status === 'SENDING' ? 'time-outline' : 'checkmark-done'}
+                              size={12}
+                              color={colors.onChromeMuted}
+                            />
+                          ) : null}
+                        </View>
                       </View>
                     </View>
                   </View>
-                </View>
-              );
-            }}
-          />
-        )}
+                );
+              }}
+            />
+          )}
 
-        <View style={styles.composer}>
-          <TextInput
-            value={draft}
-            onChangeText={setDraft}
-            placeholder="Type a message…"
-            placeholderTextColor={colors.textFaint}
-            style={styles.input}
-            multiline
-            maxLength={2000}
-            returnKeyType="default"
-          />
-          <Pressable
-            onPress={handleSend}
-            disabled={!draft.trim() || sending}
-            accessibilityRole="button"
-            accessibilityLabel="Send message"
-            style={({ pressed }) => [
-              styles.send,
-              { opacity: !draft.trim() || sending ? 0.45 : pressed ? 0.8 : 1 },
-            ]}>
-            <Ionicons name="send" size={16} color={colors.onBrand} />
-          </Pressable>
-        </View>
-      </KeyboardAvoidingView>
+          <View style={styles.composer}>
+            <TextInput
+              value={draft}
+              onChangeText={setDraft}
+              placeholder="Type a message…"
+              placeholderTextColor={colors.textFaint}
+              style={styles.input}
+              multiline
+              maxLength={2000}
+              returnKeyType="default"
+            />
+            <Pressable
+              onPress={handleSend}
+              disabled={!draft.trim() || sending}
+              accessibilityRole="button"
+              accessibilityLabel="Send message"
+              style={({ pressed }) => [
+                styles.send,
+                { opacity: !draft.trim() || sending ? 0.45 : pressed ? 0.8 : 1 },
+              ]}>
+              <Ionicons name="send" size={16} color={colors.onBrand} />
+            </Pressable>
+          </View>
+        </KeyboardAvoidingView>
+      </View>
     </SafeAreaView>
   );
 }
@@ -260,30 +266,30 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
-    paddingHorizontal: SCREEN_PADDING,
-    paddingVertical: spacing.md,
-    backgroundColor: colors.surface,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.border,
+    paddingTop: spacing.xs,
   },
   back: {
-    width: 30,
-    height: 30,
+    width: 36,
+    height: 36,
+    borderRadius: radius.pill,
+    backgroundColor: colors.chromeGlass,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.chromeGlassBorder,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: -6,
   },
   headerText: { flex: 1 },
   headerName: {
-    fontSize: font.lg,
+    fontSize: font.lg + 1,
     fontWeight: '700',
-    color: colors.text,
+    color: colors.onChrome,
   },
   headerMeta: {
     fontSize: font.xs,
-    color: colors.textFaint,
+    color: colors.onChromeMuted,
+    marginTop: 1,
   },
-  banner: { marginHorizontal: SCREEN_PADDING, marginTop: spacing.sm },
+  banner: { marginHorizontal: SCREEN_PADDING, marginTop: spacing.md },
   loading: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   listContent: {
     paddingHorizontal: SCREEN_PADDING,
@@ -331,7 +337,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: colors.textFaint,
   },
-  timeMine: { color: 'rgba(255,255,255,0.8)' },
+  timeMine: { color: colors.onChromeMuted },
   dateDivider: {
     alignItems: 'center',
     paddingVertical: spacing.sm,

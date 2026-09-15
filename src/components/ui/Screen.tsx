@@ -12,11 +12,17 @@ import {
 } from 'react-native';
 import { SafeAreaView, type Edge } from 'react-native-safe-area-context';
 
+import HeaderBand, { sheetStyle } from '@/components/ui/HeaderBand';
 import { useKeyboardAwareScroll } from '@/components/ui/useKeyboardAwareScroll';
 import { colors, SCREEN_PADDING, spacing } from '@/theme';
 
 interface ScreenProps {
   children: ReactNode;
+  /**
+   * Content for the dark header band (PageTitle, ScreenHeader, HeroHeader). The
+   * band stays fixed while the rounded sheet below it scrolls.
+   */
+  header?: ReactNode;
   /** Wraps the content in a ScrollView (default). Set false for screens that own their own list. */
   scroll?: boolean;
   refreshing?: boolean;
@@ -45,6 +51,7 @@ interface ScreenProps {
  */
 export default function Screen({
   children,
+  header,
   scroll = true,
   refreshing,
   onRefresh,
@@ -67,6 +74,7 @@ export default function Screen({
       contentContainerStyle={[
         padded && { paddingHorizontal: SCREEN_PADDING },
         styles.scrollContent,
+        !!header && styles.sheetContent,
         contentStyle,
       ]}
       keyboardShouldPersistTaps="handled"
@@ -91,7 +99,13 @@ export default function Screen({
       )}
     </ScrollView>
   ) : (
-    <View style={[styles.flex, padded && { paddingHorizontal: SCREEN_PADDING }, contentStyle]}>
+    <View
+      style={[
+        styles.flex,
+        padded && { paddingHorizontal: SCREEN_PADDING },
+        !!header && styles.sheetContent,
+        contentStyle,
+      ]}>
       {children}
     </View>
   );
@@ -108,9 +122,21 @@ export default function Screen({
     inner
   );
 
+  if (!header) {
+    return (
+      <SafeAreaView edges={edges} style={[styles.flex, { backgroundColor: background }, style]}>
+        {body}
+      </SafeAreaView>
+    );
+  }
+
+  // The band paints under the status bar itself, so the top edge is dropped here.
   return (
-    <SafeAreaView edges={edges} style={[styles.flex, { backgroundColor: background }, style]}>
-      {body}
+    <SafeAreaView
+      edges={edges.filter((edge) => edge !== 'top')}
+      style={[styles.flex, { backgroundColor: background }, style]}>
+      <HeaderBand>{header}</HeaderBand>
+      <View style={[sheetStyle, { backgroundColor: background }]}>{body}</View>
     </SafeAreaView>
   );
 }
@@ -118,4 +144,5 @@ export default function Screen({
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   scrollContent: { paddingBottom: spacing.xxl },
+  sheetContent: { paddingTop: spacing.lg },
 });

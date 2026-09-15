@@ -17,8 +17,11 @@ export default function StudentMessagesScreen() {
   }, []);
 
   return (
-    <Screen refreshing={refreshing} onRefresh={onRefresh} contentStyle={{ gap: spacing.md }}>
-      <PageTitle title="Messages" subtitle="Chat with your teachers" />
+    <Screen
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      contentStyle={{ gap: spacing.md }}
+      header={<PageTitle title="Messages" subtitle="Chat with your teachers" />}>
       <ConversationList
         onReady={(fn) => {
           reload.current = fn;

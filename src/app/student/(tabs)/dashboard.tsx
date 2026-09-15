@@ -87,25 +87,29 @@ export default function StudentDashboardScreen() {
   const results = dashboard?.recentResults ?? [];
 
   return (
-    <Screen refreshing={refreshing} onRefresh={onRefresh} contentStyle={styles.content}>
-      <HeroHeader
-        name={profile?.fullName ?? user?.fullName}
-        roleLabel="Student"
-        meta={[profile?.className, profile?.rollNumber && `Roll ${profile.rollNumber}`]
-          .filter(Boolean)
-          .join(' · ')}
-        action={
-          <Pressable
-            onPress={() => router.push('/student/messages')}
-            hitSlop={8}
-            accessibilityRole="button"
-            accessibilityLabel="Open messages"
-            style={styles.heroAction}>
-            <Ionicons name="chatbubble-ellipses-outline" size={18} color={colors.onBrand} />
-          </Pressable>
-        }
-      />
-
+    <Screen
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      contentStyle={styles.content}
+      header={
+        <HeroHeader
+          name={profile?.fullName ?? user?.fullName}
+          roleLabel="Student"
+          meta={[profile?.className, profile?.rollNumber && `Roll ${profile.rollNumber}`]
+            .filter(Boolean)
+            .join(' · ')}
+          action={
+            <Pressable
+              onPress={() => router.push('/student/messages')}
+              hitSlop={8}
+              accessibilityRole="button"
+              accessibilityLabel="Open messages"
+              style={styles.heroAction}>
+              <Ionicons name="chatbubble-ellipses-outline" size={18} color={colors.onChrome} />
+            </Pressable>
+          }
+        />
+      }>
       {error ? <Banner message={error} /> : null}
 
       {loading ? (
@@ -137,7 +141,7 @@ export default function StudentDashboardScreen() {
               icon="trophy-outline"
               label="Average score"
               value={`${Math.round(exams.averagePercentage ?? 0)}%`}
-              toneName="brand"
+              toneName="violet"
               caption={`${exams.passedExams} passed`}
             />
           </StatGrid>
@@ -282,12 +286,14 @@ function LeaveStat({ label, value }: { label: string; value: number }) {
 }
 
 const styles = StyleSheet.create({
-  content: { paddingTop: spacing.md, gap: spacing.lg },
+  content: { gap: spacing.lg },
   heroAction: {
-    width: 34,
-    height: 34,
+    width: 38,
+    height: 38,
     borderRadius: radius.pill,
-    backgroundColor: 'rgba(255,255,255,0.16)',
+    backgroundColor: colors.chromeGlass,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.chromeGlassBorder,
     alignItems: 'center',
     justifyContent: 'center',
   },

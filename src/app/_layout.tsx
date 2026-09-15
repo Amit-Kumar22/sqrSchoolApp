@@ -48,7 +48,8 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <AuthProvider>
-          <StatusBar style="dark" />
+          {/* Light text for the dark header bands; the login screen mounts its own. */}
+          <StatusBar style="light" />
           <RootNavigator />
         </AuthProvider>
       </SafeAreaProvider>

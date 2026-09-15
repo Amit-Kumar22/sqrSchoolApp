@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  iconWrapActive: { backgroundColor: colors.brandTint },
+  iconWrapActive: { backgroundColor: colors.brandSoft },
   badge: {
     position: 'absolute',
     top: -3,

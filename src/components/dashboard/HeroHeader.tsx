@@ -1,14 +1,13 @@
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 
 import { Avatar } from '@/components/ui/Layout';
 import { colors, font, radius, spacing } from '@/theme';
 import { greeting, longToday } from '@/utils/format';
 
 /**
- * Dashboard header — the espresso→amber band carried over from the portal's
- * sidebar/login chrome, so the app opens on the same brand note as the website.
+ * Dashboard header content — greeting, name and role on the navy→forest band.
+ * Pass it as `<Screen header>`; the band itself is drawn by the screen.
  */
 export default function HeroHeader({
   name,
@@ -23,16 +22,14 @@ export default function HeroHeader({
   action?: ReactNode;
 }) {
   return (
-    <LinearGradient
-      colors={[colors.brandDeeper, colors.brandDeep, colors.brandDark]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      style={styles.hero}>
+    <View style={styles.hero}>
       <View style={styles.row}>
-        <Avatar name={name} size={42} background="rgba(255,255,255,0.16)" />
+        <View style={styles.avatarRing}>
+          <Avatar name={name} size={42} />
+        </View>
         <View style={styles.text}>
           <Text style={styles.greeting} numberOfLines={1}>
-            {greeting()}
+            {greeting()},
           </Text>
           <Text style={styles.name} numberOfLines={1}>
             {name || roleLabel}
@@ -43,6 +40,7 @@ export default function HeroHeader({
 
       <View style={styles.footer}>
         <View style={styles.chip}>
+          <View style={styles.chipDot} />
           <Text style={styles.chipText}>{roleLabel}</Text>
         </View>
         {meta ? (
@@ -54,32 +52,37 @@ export default function HeroHeader({
           {longToday()}
         </Text>
       </View>
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   hero: {
-    borderRadius: radius.lg,
-    padding: spacing.lg,
-    gap: spacing.md,
+    paddingTop: spacing.xs,
+    gap: spacing.lg,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
   },
+  avatarRing: {
+    padding: 2,
+    borderRadius: radius.pill,
+    borderWidth: 1.5,
+    borderColor: colors.brandBright,
+  },
   text: { flex: 1 },
   greeting: {
-    fontSize: font.sm,
-    color: 'rgba(255,255,255,0.72)',
+    fontSize: font.md,
+    color: colors.onChromeMuted,
     fontWeight: '500',
   },
   name: {
-    fontSize: font.xl + 1,
+    fontSize: font.xxl,
     fontWeight: '800',
-    color: colors.onBrand,
-    letterSpacing: -0.4,
+    color: colors.onChrome,
+    letterSpacing: -0.5,
     marginTop: 1,
   },
   footer: {
@@ -88,26 +91,37 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   chip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
     paddingHorizontal: spacing.md,
-    paddingVertical: 3,
+    paddingVertical: 4,
     borderRadius: radius.pill,
-    backgroundColor: 'rgba(255,255,255,0.16)',
+    backgroundColor: colors.chromeGlass,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.chromeGlassBorder,
+  },
+  chipDot: {
+    width: 6,
+    height: 6,
+    borderRadius: radius.pill,
+    backgroundColor: colors.brandBright,
   },
   chipText: {
     fontSize: font.xs,
     fontWeight: '700',
-    color: colors.onBrand,
+    color: colors.onChrome,
   },
   meta: {
     flexShrink: 1,
     fontSize: font.xs,
-    color: 'rgba(255,255,255,0.8)',
+    color: colors.onChromeMuted,
     fontWeight: '600',
   },
   date: {
     flex: 1,
     textAlign: 'right',
     fontSize: font.xs,
-    color: 'rgba(255,255,255,0.65)',
+    color: colors.onChromeFaint,
   },
 });

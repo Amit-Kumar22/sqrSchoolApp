@@ -188,9 +188,11 @@ export default function TeacherAttendanceScreen() {
   const presentCount = checkedInIds.size;
 
   return (
-    <Screen refreshing={refreshing} onRefresh={onRefresh} contentStyle={styles.content}>
-      <PageTitle title="Attendance" subtitle="Mark yourself in, then your class" />
-
+    <Screen
+      refreshing={refreshing}
+      onRefresh={onRefresh}
+      contentStyle={styles.content}
+      header={<PageTitle title="Attendance" subtitle="Mark yourself in, then your class" />}>
       {/* ── My attendance ── */}
       <Card style={styles.selfCard}>
         <View style={styles.selfHead}>
@@ -360,7 +362,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: radius.sm,
-    backgroundColor: colors.brandTint,
+    backgroundColor: colors.brandSoft,
     alignItems: 'center',
     justifyContent: 'center',
   },
